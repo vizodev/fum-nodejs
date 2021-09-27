@@ -1,0 +1,122 @@
+import { Request, Response, NextFunction, Handler } from "express";
+import { FirebaseUserManagement } from "..";
+import { HandlerParams } from "../interfaces/handler-params";
+import { AuthError } from "../interfaces/auth-error";
+import { getToken } from "../utils/get-token";
+import { NOT_INITILIZED_ERROR, UNAUTHORIZED_ERROR } from "../errors";
+import { AuthUser } from "../interfaces/auth-user";
+import { User } from "../interfaces/user";
+import { Logger } from "../utils/log";
+
+export const withAuthentication = (params: HandlerParams) => {
+  Logger.instance.v('Started withAuthentication')
+  return async (
+    req: Request & { user?: User; authUser?: AuthUser },
+    res: Response,
+    next: NextFunction
+  ) => {
+
+    const instance = FirebaseUserManagement.instance;
+    if (!instance) {
+      Logger.instance.e('No instance of FUM found');
+      return NOT_INITILIZED_ERROR.toResponse(res);
+    }
+    Logger.instance.d('Found instance', instance);
+
+    let authUser: AuthUser;
+
+    try {
+      authUser = await instance.resolveToken(getToken(req));
+    } catch (error) {
+      if (error instanceof AuthError) return error.toResponse(res);
+      throw error;
+    }
+    req.authUser = authUser;
+
+    if (params.roles && authUser.role && params.roles.includes(authUser.role)) {
+      getUser(params, instance, authUser, req, res, next);
+      return;
+    }
+
+    if (
+      params.permissions &&
+      params.permissions.some((p) => authUser.permissions?.includes(p))
+    ) {
+      getUser(params, instance, authUser, req, res, next);
+      return;
+    }
+
+    if (
+      params.organizations &&
+      params.organizations.some((p) => authUser.organizationsIds?.includes(p))
+    ) {
+      getUser(params, instance, authUser, req, res, next);
+      return;
+    }
+
+    if (
+      params.teams &&
+      params.teams.some((p) => authUser.teamsIds?.includes(p))
+    ) {
+      getUser(params, instance, authUser, req, res, next);
+      return;
+    }
+
+    if (params.users && params.users.includes(authUser.id)) {
+      getUser(params, instance, authUser, req, res, next);
+      return;
+    }
+
+    if (params.emails && params.emails.includes(authUser.email)) {
+      if (
+        params.ignoreResolveForEmails &&
+        params.ignoreResolveForEmails.includes(authUser.email)
+      ) {
+        next();
+        return;
+      }
+      getUser(params, instance, authUser, req, res, next);
+      return;
+    }
+
+    return UNAUTHORIZED_ERROR.toResponse(res);
+  };
+};
+
+async function getUser(
+  params: HandlerParams,
+  instance: FirebaseUserManagement,
+  authUser: AuthUser,
+  req: any,
+  res: Response,
+  next: NextFunction
+) {
+  if (
+    params.resolveOrganizations ||
+    params.resolveTeams ||
+    params.resolveUser ||
+    params.authResolver
+  ) {
+    let user: User;
+    try {
+      user = await instance.resolveUser(authUser, {
+        resolveTeams: params.resolveTeams,
+        resolveOrganizations: params.resolveOrganizations,
+      });
+    } catch (error) {
+      if (error instanceof AuthError) return error.toResponse(res);
+      throw error;
+    }
+    req.user = user;
+
+    if ((params.authResolver && (await params.authResolver(req, user))) || !params.authResolver) {
+      next();
+      return;
+    } else {
+      return UNAUTHORIZED_ERROR.toResponse(res);
+    }
+  } else {
+    next();
+    return;
+  }
+}
