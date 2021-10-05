@@ -1,17 +1,16 @@
 {
   "name": "fum-nodejs",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "An Open Source project that provides tools to be used together with Firebase and other Authentication providers.",
+  "main": "dist/index.js",
   "scripts": {
-    "webpack": "webpack --config webpack.config.js",
-    "serve": "webpack serve --config webpack.config.js",
-    "webpack-prod": "webpack --config webpack.prod.config.js",
-    "test": "jest"
+    "build": "tsc",
+    "test": "jest",
+    "emulators": "cd tests/ && firebase emulators:start"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "David Zimberknopf",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.6",
@@ -19,20 +18,36 @@
     "@types/express": "^4.17.13",
     "@types/jest": "^27.0.2",
     "@types/supertest": "^2.0.11",
-    "awesome-typescript-loader": "^5.2.1",
     "babel-jest": "^27.2.1",
-    "express": "^4.17.1",
-    "firebase-admin": "^9.11.1",
+    "fast-crc32c": "^2.0.0",
     "jest": "^27.2.1",
     "lodash": "^4.17.21",
+    "reflect-metadata": "^0.1.13",
+    "request": "^2.88.2",
     "supertest": "^6.1.6",
     "terser-webpack-plugin": "^5.2.4",
+    "ts-jest": "^27.0.5",
+    "ts-loader": "^9.2.6",
     "typescript": "^4.4.3",
     "webpack": "^5.53.0",
     "webpack-cli": "^4.8.0",
     "webpack-dev-server": "^4.2.1"
   },
   "dependencies": {
+    "express": "^4.17.1",
+    "firebase": "^8.10.0",
+    "firebase-admin": "^9.11.1",
     "google-auth-library": "^7.9.2"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vizodev/fum-nodejs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vizodev/fum-nodejs/issues"
+  },
+  "homepage": "https://github.com/vizodev/fum-nodejs#readme"
 }

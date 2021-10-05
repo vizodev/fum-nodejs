@@ -157,7 +157,8 @@ limitations under the License.
                     var providerData = user.providerData;
                     document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
                     document.getElementById('quickstart-sign-in').textContent = 'Sign out';
-                    document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
+                    console.log(user?.multiFactor?.user?.stsTokenManager?.accessToken);
+                    document.getElementById('quickstart-account-details').textContent = JSON.stringify(user?.multiFactor?.user?.stsTokenManager?.accessToken, null, '  ');
                     if (!emailVerified) {
                         document.getElementById('quickstart-verify-email').disabled = false;
                     }

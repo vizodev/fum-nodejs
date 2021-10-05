@@ -2,16 +2,20 @@
   "compileOnSave": false,
   "buildOnSave": false,
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "target": "ES6",
+    "baseUrl": ".",
+    "module": "CommonJS",
+    "outDir": "./dist",
     "moduleResolution": "node",
     "removeComments": true,
+    "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "types": [],
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "types": ["reflect-metadata", "jest", "node", "@types/jest"],
     "allowSyntheticDefaultImports": true
   },
-  "files": ["*/**"],
-  "exclude": ["node_modules", "dist", "tests"]
+  "include": ["src/**.ts"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.test.ts"]
 }

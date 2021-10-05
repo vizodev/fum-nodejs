@@ -8,74 +8,94 @@ import { AuthUser } from "../interfaces/auth-user";
 import { User } from "../interfaces/user";
 import { Logger } from "../utils/log";
 
-export const withAuthentication = (params: HandlerParams) => {
-  Logger.instance.v('Started withAuthentication')
+export const withAuthentication = (params?: HandlerParams) => {
+  Logger.instance.v("Started withAuthentication");
   return async (
     req: Request & { user?: User; authUser?: AuthUser },
     res: Response,
     next: NextFunction
   ) => {
-
     const instance = FirebaseUserManagement.instance;
     if (!instance) {
-      Logger.instance.e('No instance of FUM found');
+      Logger.instance.e("No instance of FUM found");
       return NOT_INITILIZED_ERROR.toResponse(res);
     }
-    Logger.instance.d('Found instance', instance);
+    Logger.instance.d("Found instance", instance);
 
     let authUser: AuthUser;
 
     try {
       authUser = await instance.resolveToken(getToken(req));
     } catch (error) {
+      console.log("Got error", error instanceof AuthError);
+
       if (error instanceof AuthError) return error.toResponse(res);
       throw error;
     }
     req.authUser = authUser;
 
-    if (params.roles && authUser.role && params.roles.includes(authUser.role)) {
-      getUser(params, instance, authUser, req, res, next);
+    if (!params) {
+      next();
       return;
     }
 
     if (
-      params.permissions &&
-      params.permissions.some((p) => authUser.permissions?.includes(p))
+      params?.roles &&
+      authUser.role &&
+      params?.roles.includes(authUser.role)
     ) {
-      getUser(params, instance, authUser, req, res, next);
+      getUser(instance, authUser, req, res, next, params);
       return;
     }
 
     if (
-      params.organizations &&
-      params.organizations.some((p) => authUser.organizationsIds?.includes(p))
+      params?.permissions &&
+      params?.permissions.some((p) => authUser.permissions?.includes(p))
     ) {
-      getUser(params, instance, authUser, req, res, next);
+      getUser(instance, authUser, req, res, next, params);
       return;
     }
 
     if (
-      params.teams &&
-      params.teams.some((p) => authUser.teamsIds?.includes(p))
+      params?.organizations &&
+      params?.organizations.some((p) => authUser.organizationsIds?.includes(p))
     ) {
-      getUser(params, instance, authUser, req, res, next);
+      getUser(instance, authUser, req, res, next, params);
       return;
     }
 
-    if (params.users && params.users.includes(authUser.id)) {
-      getUser(params, instance, authUser, req, res, next);
+    if (
+      params?.teams &&
+      params?.teams.some((p) => authUser.teamsIds?.includes(p))
+    ) {
+      getUser(instance, authUser, req, res, next, params);
       return;
     }
 
-    if (params.emails && params.emails.includes(authUser.email)) {
+    if (params?.users && params?.users.includes(authUser.id)) {
+      getUser(instance, authUser, req, res, next, params);
+      return;
+    }
+
+    if (params?.emails && params?.emails.includes(authUser.email)) {
       if (
-        params.ignoreResolveForEmails &&
-        params.ignoreResolveForEmails.includes(authUser.email)
+        params?.ignoreResolveForEmails &&
+        params?.ignoreResolveForEmails.includes(authUser.email)
       ) {
         next();
         return;
       }
-      getUser(params, instance, authUser, req, res, next);
+      getUser(instance, authUser, req, res, next, params);
+      return;
+    }
+
+    if (
+      params?.resolveOrganizations ||
+      params?.resolveTeams ||
+      params?.resolveUser ||
+      params?.authResolver
+    ) {
+      getUser(instance, authUser, req, res, next, params);
       return;
     }
 
@@ -84,24 +104,24 @@ export const withAuthentication = (params: HandlerParams) => {
 };
 
 async function getUser(
-  params: HandlerParams,
   instance: FirebaseUserManagement,
   authUser: AuthUser,
   req: any,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
+  params?: HandlerParams
 ) {
   if (
-    params.resolveOrganizations ||
-    params.resolveTeams ||
-    params.resolveUser ||
-    params.authResolver
+    params?.resolveOrganizations ||
+    params?.resolveTeams ||
+    params?.resolveUser ||
+    params?.authResolver
   ) {
     let user: User;
     try {
       user = await instance.resolveUser(authUser, {
-        resolveTeams: params.resolveTeams,
-        resolveOrganizations: params.resolveOrganizations,
+        resolveTeams: params?.resolveTeams,
+        resolveOrganizations: params?.resolveOrganizations,
       });
     } catch (error) {
       if (error instanceof AuthError) return error.toResponse(res);
@@ -109,7 +129,10 @@ async function getUser(
     }
     req.user = user;
 
-    if ((params.authResolver && (await params.authResolver(req, user))) || !params.authResolver) {
+    if (
+      (params?.authResolver && (await params?.authResolver(req, user))) ||
+      !params?.authResolver
+    ) {
       next();
       return;
     } else {
