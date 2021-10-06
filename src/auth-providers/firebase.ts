@@ -1,19 +1,22 @@
 import admin from "firebase-admin";
+import { FirebaseUserManagement } from "src";
 import { AuthError } from "../interfaces/auth-error";
 import { AuthProvider } from "../interfaces/auth-provider";
-import { Logger } from "../utils/log";
+import { Logger } from "../utils/logger";
 
-export class FirebaseAuthProvider implements AuthProvider<admin.auth.DecodedIdToken> {
-  constructor() {
+export class FirebaseAuthProvider
+  implements AuthProvider<admin.auth.DecodedIdToken>
+{
+  constructor(projectId?: string) {
     if (!admin.apps.length) {
-      admin.initializeApp({projectId: 'fum-dev'}); 
+      admin.initializeApp({ projectId });
     }
   }
 
   async resolveToken(token: string) {
     try {
       const result = await admin.auth().verifyIdToken(token, true);
-      Logger.instance.d('verifyIdToken result', result)
+      FirebaseUserManagement.logger.d("verifyIdToken result", result);
       return this.transformer(result);
     } catch (err) {
       throw this.formatErrors(err);

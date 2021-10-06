@@ -1,6 +1,6 @@
 {
   "name": "fum-nodejs",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "An Open Source project that provides tools to be used together with Firebase and other Authentication providers.",
   "main": "dist/index.js",
   "scripts": {
@@ -37,6 +37,7 @@
     "express": "^4.17.1",
     "firebase": "^8.10.0",
     "firebase-admin": "^9.11.1",
+    "firebase-functions": "^3.15.7",
     "google-auth-library": "^7.9.2"
   },
   "directories": {

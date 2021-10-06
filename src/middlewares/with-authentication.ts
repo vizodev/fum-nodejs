@@ -6,10 +6,10 @@ import { getToken } from "../utils/get-token";
 import { NOT_INITILIZED_ERROR, UNAUTHORIZED_ERROR } from "../errors";
 import { AuthUser } from "../interfaces/auth-user";
 import { User } from "../interfaces/user";
-import { Logger } from "../utils/log";
+import { Logger } from "../utils/logger";
 
 export const withAuthentication = (params?: HandlerParams) => {
-  Logger.instance.v("Started withAuthentication");
+  FirebaseUserManagement.logger.v("Started withAuthentication");
   return async (
     req: Request & { user?: User; authUser?: AuthUser },
     res: Response,
@@ -17,10 +17,10 @@ export const withAuthentication = (params?: HandlerParams) => {
   ) => {
     const instance = FirebaseUserManagement.instance;
     if (!instance) {
-      Logger.instance.e("No instance of FUM found");
+      FirebaseUserManagement.logger.e("No instance of FUM found");
       return NOT_INITILIZED_ERROR.toResponse(res);
     }
-    Logger.instance.d("Found instance", instance);
+    FirebaseUserManagement.logger.d("Found instance", instance);
 
     let authUser: AuthUser;
 

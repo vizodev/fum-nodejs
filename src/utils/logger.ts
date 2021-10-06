@@ -1,11 +1,5 @@
 export class Logger {
-  static instance: Logger;
-
   private level: 0 | 1 | 2 | 3 | 4;
-
-  static initialize(level?: "v" | "d" | "w" | "e") {
-    Logger.instance = new Logger(level);
-  }
 
   constructor(level?: "v" | "d" | "w" | "e") {
     this.level = !level
@@ -17,6 +11,7 @@ export class Logger {
       : level === "w"
       ? 3
       : 4;
+    return this;
   }
 
   v(...value: any) {

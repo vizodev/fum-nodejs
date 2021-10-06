@@ -17,15 +17,15 @@ export class FirestoreDBProvider implements DBProvider {
   private organizationsCollection: admin.firestore.CollectionReference;
   private teamsCollection: admin.firestore.CollectionReference;
 
-  constructor() {
+  constructor(projectId?: string) {
     if (!admin.apps.length) {
-      admin.initializeApp({projectId: 'fum-dev'});
+      admin.initializeApp({ projectId });
     }
 
     this.usersCollection = admin.firestore().collection(FUM_USERS_COLLECTION);
-    this.organizationsCollection = admin.firestore().collection(
-      FUM_ORGANIZATIONS_COLLECTION
-    );
+    this.organizationsCollection = admin
+      .firestore()
+      .collection(FUM_ORGANIZATIONS_COLLECTION);
     this.teamsCollection = admin.firestore().collection(FUM_TEAMS_COLLECTION);
   }
 

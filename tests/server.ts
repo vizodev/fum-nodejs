@@ -7,6 +7,7 @@ import {
   auth,
   withAuthentication,
 } from "../src/index";
+import { FirebaseFunctionsLogger } from "../src/utils/firebase-functions-logger";
 
 process.env.FIREBASE_AUTH_EMULATOR_HOST = "localhost:9099";
 process.env.FIRESTORE_EMULATOR_HOST = "localhost:8080";
@@ -14,6 +15,7 @@ process.env.FIRESTORE_EMULATOR_HOST = "localhost:8080";
 FirebaseUserManagement.initialize({
   dbProvider: new db.FirestoreDBProvider(),
   authProviders: [new auth.FirebaseAuthProvider()],
+  logger: FirebaseFunctionsLogger,
 });
 
 const app = express();
