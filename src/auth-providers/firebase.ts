@@ -1,8 +1,7 @@
 import admin from "firebase-admin";
-import { FirebaseUserManagement } from "src";
+import { FirebaseUserManagement } from "../index";
 import { AuthError } from "../interfaces/auth-error";
 import { AuthProvider } from "../interfaces/auth-provider";
-import { Logger } from "../utils/logger";
 
 export class FirebaseAuthProvider
   implements AuthProvider<admin.auth.DecodedIdToken>

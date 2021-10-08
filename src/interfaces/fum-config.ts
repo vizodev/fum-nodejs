@@ -1,4 +1,4 @@
-import { Logger } from "src/utils/logger";
+import { Logger } from "../utils/logger";
 import { AuthProvider } from "./auth-provider";
 import { DBProvider } from "./db-provider";
 export interface FUMConfig {
