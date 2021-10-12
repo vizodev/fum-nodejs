@@ -29,7 +29,7 @@ export class FirebaseAuthProvider
       organizationsIds: result.organizationsIds,
       teamsIds: result.teamsIds,
       permissions: result.permissions,
-      role: result.role,
+      roles: result.roles,
     };
   }
 

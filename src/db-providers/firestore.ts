@@ -41,7 +41,7 @@ export class FirestoreDBProvider implements DBProvider {
           id: snap.id,
           name: data.name,
           email: data.email,
-          role: data.role,
+          roles: data.roles,
           permissions: data.permissions,
           ...data,
         };

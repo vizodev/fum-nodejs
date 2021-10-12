@@ -8,6 +8,6 @@ export interface User extends AuthUser {
     email: string;
     organizations?: Organization[];
     teams?: Team[];
-    role: string;
+    roles: string[];
     permissions: string[];
 }

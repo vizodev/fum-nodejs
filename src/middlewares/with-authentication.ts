@@ -6,7 +6,6 @@ import { getToken } from "../utils/get-token";
 import { NOT_INITILIZED_ERROR, UNAUTHORIZED_ERROR } from "../errors";
 import { AuthUser } from "../interfaces/auth-user";
 import { User } from "../interfaces/user";
-import { Logger } from "../utils/logger";
 
 export const withAuthentication = (params?: HandlerParams) => {
   FirebaseUserManagement.logger.v("Started withAuthentication");
@@ -41,8 +40,8 @@ export const withAuthentication = (params?: HandlerParams) => {
 
     if (
       params?.roles &&
-      authUser.role &&
-      params?.roles.includes(authUser.role)
+      authUser.roles &&
+      params?.roles.some((r) => authUser.roles.includes(r))
     ) {
       getUser(instance, authUser, req, res, next, params);
       return;

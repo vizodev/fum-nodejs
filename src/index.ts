@@ -13,7 +13,7 @@ import { FUMConfig } from "./interfaces/fum-config";
 import { withAuthentication } from "./middlewares/with-authentication";
 import { FirestoreDBProvider } from "./db-providers";
 import { FirebaseAuthProvider, GoogleIDPAuthProvider } from "./auth-providers";
-import { Logger } from "./utils/logger";
+import { Logger, FirebaseFunctionsLogger } from "./loggers";
 import { AuthError } from "./interfaces/auth-error";
 
 export class FirebaseUserManagement {
@@ -78,4 +78,5 @@ export class FirebaseUserManagement {
 
 const db = { FirestoreDBProvider };
 const auth = { FirebaseAuthProvider, GoogleIDPAuthProvider };
-export { withAuthentication, db, auth };
+const logger = { Logger, FirebaseFunctionsLogger }
+export { withAuthentication, db, auth, logger };

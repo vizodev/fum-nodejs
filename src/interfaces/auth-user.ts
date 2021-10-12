@@ -4,6 +4,6 @@ export interface AuthUser {
     email: string;
     organizationsIds?: string[];
     teamsIds?: string[];
-    role: string;
+    roles: string[];
     permissions: string[];
 }
