@@ -1,6 +1,5 @@
 import { ProviderUserTransformer } from "../types/provider-user-transformer";
 import { AuthUser } from "./auth-user";
-import { AuthError } from "./auth-error";
 
 export interface AuthProvider<T> {
 
