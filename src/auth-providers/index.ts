@@ -1,2 +1,2 @@
 export * from './firebase';
-export * from './google-idp';
+export * from './google-auth';

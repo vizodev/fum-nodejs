@@ -2,7 +2,7 @@ import { AuthError } from "../interfaces/auth-error";
 import { AuthProvider } from "../interfaces/auth-provider";
 import { OAuth2Client, TokenPayload } from "google-auth-library";
 
-export class GoogleIDPAuthProvider
+export class GoogleAuthProvider
   implements AuthProvider<TokenPayload>
 {
   private auth: OAuth2Client;
