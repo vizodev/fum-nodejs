@@ -1,6 +1,6 @@
 {
   "name": "fum-nodejs",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "An Open Source project that provides tools to be used together with Firebase and other Authentication providers.",
   "main": "dist/index.js",
   "scripts": {
